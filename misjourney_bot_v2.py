@@ -240,162 +240,168 @@ def find_last_U():
     #     print(u,sta)
     return last_u
 
-L = {}
-CLS = ['fImage','mImage']
-TYPE = ['woman','man']
-for k in CLS:
-    L[k] = []
-    
-while True:
-    ##start---------------
+try:
 
-    chrome_options = Options()
-    if chrome_headless:
-        chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(options=chrome_options,service=ChromeService(ChromeDriverManager(chrome_version).install()))
-
-    driver.set_window_size(1000, 6000)
-    # driver.maximize_window()
-    print('driver.get_window_size()',driver.get_window_size())
-
-    driver.get('https://discord.com/channels/@me/1120122639726432326/1120175931760320562')
-    time.sleep(10)
-
-    # #login
-    x_username = '/html/body/div[2]/div[2]/div[1]/div[1]/div/div/div/div/form/div[2]/div/div[1]/div[2]/div[1]/div/div[2]/input'
-    x_password = '/html/body/div[2]/div[2]/div[1]/div[1]/div/div/div/div/form/div[2]/div/div[1]/div[2]/div[2]/div/input'
-    sent_key(x_username,username)
-    sent_key(x_password,password)
-    time.sleep(1)
-    ENTER(x_password)
-    time.sleep(10)
-
-    #open misjourney chat
-    click('/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[1]/nav/div[1]/button')
-    time.sleep(1)
-    sent_key('/html/body/div[2]/div[2]/div[1]/div[3]/div[2]/div/div/div/input','Midjourney Bot')
-    time.sleep(1)
-    click('/html/body/div[2]/div[2]/div[1]/div[3]/div[2]/div/div/div/div[1]/div/div[2]/div')
-    time.sleep(10)
-
-    #set fast or relax
-    # sent_command(['/fast'])
-    sent_command([config.mode])
-    time.sleep(10)
-
-    #crawling loop...
-    # for x in range(3):
-    x = 0
-    # L = {}
-    # CLS = ['fImage','mImage']
-    # TYPE = ['woman','man']
-    # for k in CLS:
-    #     L[k] = []
-
+    L = {}
+    CLS = ['fImage','mImage']
+    TYPE = ['woman','man']
+    for k in CLS:
+        L[k] = []
+        
     while True:
-        
-        sent_command([f'loop {x}'])  
+        ##start---------------
+
+        chrome_options = Options()
+        if chrome_headless:
+            chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(options=chrome_options,service=ChromeService(ChromeDriverManager(chrome_version).install()))
+
+        driver.set_window_size(1000, 6000)
+        # driver.maximize_window()
+        print('driver.get_window_size()',driver.get_window_size())
+
+        driver.get('https://discord.com/channels/@me/1120122639726432326/1120175931760320562')
+        time.sleep(10)
+
+        # #login
+        x_username = '/html/body/div[2]/div[2]/div[1]/div[1]/div/div/div/div/form/div[2]/div/div[1]/div[2]/div[1]/div/div[2]/input'
+        x_password = '/html/body/div[2]/div[2]/div[1]/div[1]/div/div/div/div/form/div[2]/div/div[1]/div[2]/div[2]/div/input'
+        sent_key(x_username,username)
+        sent_key(x_password,password)
         time.sleep(1)
+        ENTER(x_password)
+        time.sleep(10)
 
-        cls = CLS[x%len(CLS)]
-        Type = TYPE[x%len(CLS)]
-        text = f'{random.choice(nation)} {Type} wearing in {random.choice(wearing)} style at {random.choice(location)} by {random.choice(style)} {random.choice(photo)}'
+        #open misjourney chat
+        click('/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[1]/nav/div[1]/button')
+        time.sleep(1)
+        sent_key('/html/body/div[2]/div[2]/div[1]/div[3]/div[2]/div/div/div/input','Midjourney Bot')
+        time.sleep(1)
+        click('/html/body/div[2]/div[2]/div[1]/div[3]/div[2]/div/div/div/div[1]/div/div[2]/div')
+        time.sleep(10)
 
-        print('\nloop:',x,'='*40)
-        print('text',text)
+        #set fast or relax
+        # sent_command(['/fast'])
+        sent_command([config.mode])
+        time.sleep(10)
 
-        sent_command(['/imagine',text])
-        time.sleep(3)
-        
-        #find last n
-        U,V,n = findlast_UV()
-        last_n = n
-        print('last n=',n)
-        
-        #wait for genenrated
-        print('wait for genenrated...')
-        start_attemp = time.time()
-        while n == last_n and time.time()-start_attemp < config.waiting_time:
-            U,V,n = findlast_UV()
+        #crawling loop...
+        # for x in range(3):
+        x = 0
+        # L = {}
+        # CLS = ['fImage','mImage']
+        # TYPE = ['woman','man']
+        # for k in CLS:
+        #     L[k] = []
+
+        while True:
+            
+            sent_command([f'loop {x}'])  
+            time.sleep(1)
+
+            cls = CLS[x%len(CLS)]
+            Type = TYPE[x%len(CLS)]
+            text = f'{random.choice(nation)} {Type} wearing in {random.choice(wearing)} style at {random.choice(location)} by {random.choice(style)} {random.choice(photo)}'
+
+            print('\nloop:',x,'='*40)
+            print('text',text)
+
+            sent_command(['/imagine',text])
             time.sleep(3)
             
-        #update last n
-        U,V,n = findlast_UV()
-        last_n = n
-        print('last n=',n)
-        last_U = find_last_U()
-        print('last_U=',last_U)
-        
-        
-        #click U
-        i = 0
-        start_attemp = time.time()
-        while i < 4 and time.time()-start_attemp < config.waiting_time:
-            try:
-                click(U[i])
-                print('click U',i+1)
-                i += 1
-            except:
-                pass
-            time.sleep(2)
+            #find last n
+            U,V,n = findlast_UV()
+            last_n = n
+            print('last n=',n)
             
-        #check click U complte or not
-        start_attemp = time.time()
-        last_U = find_last_U()
-        while last_U < last_n+4 and time.time()-start_attemp < config.waiting_time:
+            #wait for genenrated
+            print('wait for genenrated...')
+            start_attemp = time.time()
+            while n == last_n and time.time()-start_attemp < config.waiting_time:
+                U,V,n = findlast_UV()
+                time.sleep(3)
+                
+            #update last n
+            U,V,n = findlast_UV()
+            last_n = n
+            print('last n=',n)
             last_U = find_last_U()
-            print('last_U',last_U)
-        print('upscale complete! last_U',last_U)
-        time.sleep(5)
+            print('last_U=',last_U)
             
-        #get href
-        current_l = []
-        for i in range(last_n+1,last_n+10):
-            l = None
-            try:
-                l = get_herf(f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/main/div[1]/div/div/ol/li[{i}]/div/div[3]/div[1]/div/div/div/div/div/a')
-            except:
+            
+            #click U
+            i = 0
+            start_attemp = time.time()
+            while i < 4 and time.time()-start_attemp < config.waiting_time:
                 try:
-                    l = get_herf(f'/html/body/div[1]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/main/div[1]/div[2]/div/ol/li[{i}]/div/div[3]/div[1]/div/div/div/div/div/a')
-                except Exception as e:
-                    # print(e)
+                    click(U[i])
+                    print('click U',i+1)
+                    i += 1
+                except:
                     pass
-            if l:
-                L[cls].append(l)
-                current_l.append(l)
-                print(cls,i,l)
-        if not current_l:
-            print('restart!!'*100)
-
-            #logout
-            click('/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[1]/section/div[2]/div[1]/div[2]')
-            time.sleep(2)
-            click('/html/body/div[2]/div[2]/div[1]/div[3]/div/div/div/div/div/div[3]/div[5]/div/div[3]/div/div[2]/div[2]')
+                time.sleep(2)
+                
+            #check click U complte or not
+            start_attemp = time.time()
+            last_U = find_last_U()
+            while last_U < last_n+4 and time.time()-start_attemp < config.waiting_time:
+                last_U = find_last_U()
+                print('last_U',last_U)
+            print('upscale complete! last_U',last_U)
             time.sleep(5)
-            click('/html/body/div[2]/div[2]/div[1]/div[3]/div[2]/div/div/div/div/div/div[2]/div[1]/div/div/div[3]/button')
-            time.sleep(2)
-            click('/html/body/div[2]/div[2]/div[1]/div[3]/div[3]/div/div/div[1]')
-            time.sleep(2)
+                
+            #get href
+            current_l = []
+            for i in range(last_n+1,last_n+10):
+                l = None
+                try:
+                    l = get_herf(f'/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/main/div[1]/div/div/ol/li[{i}]/div/div[3]/div[1]/div/div/div/div/div/a')
+                except:
+                    try:
+                        l = get_herf(f'/html/body/div[1]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[2]/div[2]/main/div[1]/div[2]/div/ol/li[{i}]/div/div[3]/div[1]/div/div/div/div/div/a')
+                    except Exception as e:
+                        # print(e)
+                        pass
+                if l:
+                    L[cls].append(l)
+                    current_l.append(l)
+                    print(cls,i,l)
+            if not current_l:
+                print('restart!!'*100)
 
-            driver.close()
-            break
+                #logout
+                click('/html/body/div[2]/div[2]/div[1]/div[1]/div/div[2]/div/div/div/div/div[1]/section/div[2]/div[1]/div[2]')
+                time.sleep(2)
+                click('/html/body/div[2]/div[2]/div[1]/div[3]/div/div/div/div/div/div[3]/div[5]/div/div[3]/div/div[2]/div[2]')
+                time.sleep(5)
+                click('/html/body/div[2]/div[2]/div[1]/div[3]/div[2]/div/div/div/div/div/div[2]/div[1]/div/div/div[3]/button')
+                time.sleep(2)
+                click('/html/body/div[2]/div[2]/div[1]/div[3]/div[3]/div/div/div[1]')
+                time.sleep(2)
 
-        print('get href complete!')
-        print('L',L)
-        print("len(L['fImage'])",len(L['fImage']),"len(L['mImage'])",len(L['mImage']))
-        print('-'*20)
+                driver.close()
+                break
 
-        #sent api and save csv
-        min_L = min([len(L[k]) for k in L.keys()])
-        if min_L > 0:
-            print('min_L',min_L,'-='*100)
-            for ii in range(min_L):
-                for cls in L.keys():
-        #             cls = 'fImage'
-                    image_url = L[cls].pop()
-                    r = PostApi(image_url,cls)
-                    add_row_to_csv('misjourey_data.csv', [image_url,cls,time.time()])
-                    print(r,cls,image_url)
+            print('get href complete!')
+            print('L',L)
+            print("len(L['fImage'])",len(L['fImage']),"len(L['mImage'])",len(L['mImage']))
+            print('-'*20)
 
-        x += 1
+            #sent api and save csv
+            min_L = min([len(L[k]) for k in L.keys()])
+            if min_L > 0:
+                print('min_L',min_L,'-='*100)
+                for ii in range(min_L):
+                    for cls in L.keys():
+            #             cls = 'fImage'
+                        image_url = L[cls].pop()
+                        r = PostApi(image_url,cls)
+                        add_row_to_csv('misjourey_data.csv', [image_url,cls,time.time()])
+                        print(r,cls,image_url)
 
+            x += 1
+
+except Exception as e:
+    print('Error',e)
+    driver.close()
+    time.sleep(10)

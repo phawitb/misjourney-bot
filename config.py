@@ -1,5 +1,5 @@
 username = 'phawit.boo@gmail.com'  #------------------------
-password = 'awevdfkbm'   #------------------------
+password = 'erverwv12431'   #------------------------
 mode = '/relax'
 
 chrome_version = '114.0.5735.90'    #------------------------
